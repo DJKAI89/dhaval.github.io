@@ -1,14 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Upstox Login Successful</title></head>
+<html>
+<head>
+    <title>Upstox Callback</title>
+</head>
 <body>
-<h2>Upstox Login Successful</h2><p>You may close this window now.</p>
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-    if (code) {
-        window.location.href = "kritiktrading://upstox?code=" + code;
-    }
-</script>
+    <h2>Processing OAuth...</h2>
+    <script>
+        // Get code from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            // Send code to local C# server
+            fetch(`http://localhost:5000/receive_code/?code=${code}`)
+                .then(() => {
+                    document.body.innerHTML = "<h2>Code sent to local app! You can close this page.</h2>";
+                })
+                .catch(err => {
+                    document.body.innerHTML = "<h2>Failed to send code. Make sure your local app is running.</h2>";
+                    console.error(err);
+                });
+        } else {
+            document.body.innerHTML = "<h2>No code found in URL.</h2>";
+        }
+    </script>
 </body>
 </html>
